@@ -13,6 +13,7 @@ import passport from "passport";
 import expressValidator from "express-validator";
 import bluebird from "bluebird";
 import { MONGODB_URI, SESSION_SECRET } from "./util/secrets";
+import cors from "cors";
 
 const MongoStore = mongo(session);
 
@@ -24,6 +25,7 @@ import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
 import * as apiController from "./controllers/api";
 import * as contactController from "./controllers/contact";
+import * as fileController from "./controllers/file";
 
 
 // API keys and Passport configuration
@@ -57,7 +59,8 @@ app.use(session({
   store: new MongoStore({
     url: mongoUrl,
     autoReconnect: true
-  })
+  }),
+  name: "sessionFirst"
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -87,6 +90,8 @@ app.use(
   express.static(path.join(__dirname, "public"), { maxAge: 31557600000 })
 );
 
+app.use(cors());
+
 /**
  * Primary app routes.
  */
@@ -108,6 +113,10 @@ app.post("/account/profile", passportConfig.isAuthenticated, userController.post
 app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
 app.post("/account/delete", passportConfig.isAuthenticated, userController.postDeleteAccount);
 app.get("/account/unlink/:provider", passportConfig.isAuthenticated, userController.getOauthUnlink);
+app.post("/file", fileController.fileUpload);
+app.get("/test", (req, res) => {
+  res.send({ success: true });
+});
 
 /**
  * API examples routes.

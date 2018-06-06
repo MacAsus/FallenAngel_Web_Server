@@ -16,6 +16,7 @@ export let index = (req: Request, res: Response) => {
 };
 
 export let choice = (req: Request, res: Response) => {
-  console.log("고고" + __dirname + "/../public/choice.html");
+  console.log("req.user " + req.user);
+  // console.log("고고" + __dirname + "/../public/choice.html");
   res.sendFile(path.resolve(__dirname + "/../public/choice.html"));
 };
