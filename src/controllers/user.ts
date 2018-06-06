@@ -7,6 +7,7 @@ import { Request, Response, NextFunction } from "express";
 import { IVerifyOptions } from "passport-local";
 import { WriteError } from "mongodb";
 const request = require("express-validator");
+import path from "path";
 
 
 /**
@@ -15,18 +16,22 @@ const request = require("express-validator");
  */
 export let getLogin = (req: Request, res: Response) => {
   if (req.user) {
-    return res.redirect("/");
+    console.log("이미 로그인");
+    return res.redirect("http://localhost:9001/");
   }
+  console.log("이미 로그인 X");
   res.render("account/login", {
     title: "Login"
   });
 };
 
 /**
+ * Now using
  * POST /login
  * Sign in using email and password.
  */
 export let postLogin = (req: Request, res: Response, next: NextFunction) => {
+  console.log("req body", req.body);
   req.assert("email", "Email is not valid").isEmail();
   req.assert("password", "Password cannot be blank").notEmpty();
   req.sanitize("email").normalizeEmail({ gmail_remove_dots: false });
@@ -34,20 +39,19 @@ export let postLogin = (req: Request, res: Response, next: NextFunction) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    req.flash("errors", errors);
-    return res.redirect("/login");
+    return res.send({success: false, msg: errors}).status(500);
   }
 
   passport.authenticate("local", (err: Error, user: UserModel, info: IVerifyOptions) => {
     if (err) { return next(err); }
     if (!user) {
-      req.flash("errors", info.message);
-      return res.redirect("/login");
+      return res.send({success: false, msg: info.message}).status(500);
     }
     req.logIn(user, (err) => {
       if (err) { return next(err); }
-      req.flash("success", { msg: "Success! You are logged in." });
-      res.redirect(req.session.returnTo || "/");
+      // res.redirect(req.session.returnTo || "/");
+      // res.redirect("/choice");
+      res.send({success: true, msg: "Login Success"}).status(200);
     });
   })(req, res, next);
 };
@@ -67,14 +71,13 @@ export let logout = (req: Request, res: Response) => {
  */
 export let getSignup = (req: Request, res: Response) => {
   if (req.user) {
-    return res.redirect("/");
+    return res.redirect("http://localhost:9001/");
   }
-  res.render("account/signup", {
-    title: "Create Account"
-  });
+  res.sendFile(path.resolve(__dirname + "/../public/signup.html"));
 };
 
 /**
+ * Now using
  * POST /signup
  * Create a new local account.
  */
@@ -88,7 +91,7 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
 
   if (errors) {
     req.flash("errors", errors);
-    return res.redirect("/signup");
+    return res.send({success: false, msg: errors}).status(500);
   }
 
   const user = new User({
@@ -99,8 +102,7 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
   User.findOne({ email: req.body.email }, (err, existingUser) => {
     if (err) { return next(err); }
     if (existingUser) {
-      req.flash("errors", { msg: "Account with that email address already exists." });
-      return res.redirect("/signup");
+      return res.send({success: false, msg: "Account with that email address already exists."}).status(500);
     }
     user.save((err) => {
       if (err) { return next(err); }
@@ -108,7 +110,7 @@ export let postSignup = (req: Request, res: Response, next: NextFunction) => {
         if (err) {
           return next(err);
         }
-        res.redirect("/");
+        return res.send({success: true, msg: "SignUp Success."}).status(200);
       });
     });
   });
