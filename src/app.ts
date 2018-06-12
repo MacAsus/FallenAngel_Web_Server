@@ -99,6 +99,7 @@ app.get("/", homeController.index);
 app.get("/choice", homeController.choice);
 app.get("/login", userController.getLogin);
 app.post("/login", userController.postLogin);
+app.get("/editor", homeController.editor);
 app.get("/logout", userController.logout);
 app.get("/forgot", userController.getForgot);
 app.post("/forgot", userController.postForgot);

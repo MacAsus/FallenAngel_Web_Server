@@ -3,15 +3,16 @@ import { Request, Response, NextFunction } from "express";
 import * as AWS from "aws-sdk";
 
 const s3 = new AWS.S3();
-
+// data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAALUlEQVRYR+3QQREAAAABQfqXFsNnFTizzXk99+MAAQIECBAgQIAAAQIECBAgMBo/ACHo7lH9AAAAAElFTkSuQmCC
 export let fileUpload = (req: Request, res: Response) => {
-  console.log("req.user is" + req.user);
   if (req.user) {
     console.log("파일 로그인");
     const params = {
-      Bucket: "Fallen_Angel",
+      Bucket: "fallen-angel",
       Key: "Fallen_Angel.png",
-      Body: "Hello!"
+      Body: new Buffer(req.body.imageDataUri.replace(/^data:image\/png;base64,/, ""), "base64"),
+      ContentEncoding: "base64",
+      ContentType: "image/png"
     };
     s3.putObject(params, function(err, data) {
       if (err) {
