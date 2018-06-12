@@ -25719,12 +25719,13 @@ return Q;
 })();
 ;(function () {
   var ns = $.namespace('pskl.controller.settings.exportimage');
+  var that = this;
 
   var dimensionInfoPattern = '{{width}} x {{height}} px, {{frames}}<br/>{{columns}}, {{rows}}.';
 
   var replace = pskl.utils.Template.replace;
 
-  // Helper to return "X items" or "1 item" if X is 1.
+  // Helper to return 'X items' or '1 item' if X is 1.
   var pluralize = function (word, count) {
     if (count === 1) {
       return '1 ' + word;
@@ -25946,34 +25947,9 @@ return Q;
   ns.PngExportController.prototype.onDataUriClick_ = function (evt) {
     // var popup = window.open('about:blank');
     var dataUri = this.createPngSpritesheet_().toDataURL('image/png');
-    // Todo: Send To Server API
-    console.log('저장할 dataUri', dataUri);
-    $.ajax({
-      type: 'POST',
-      url: 'http://localhost:3000/file',
-      data: JSON.stringify({
-        imageDataUri: dataUri,
-        job: 'heavy' // Todo: Need to add some player job
-      }), // or JSON.stringify ({name: 'jonas'}),
-      success: function (data) {
-        if (data.success) { // 로그인 성공
-          console.log('success data: ' + JSON.stringify(data));
-        } else { // 로그인 실패
-          alert(data.msg);
-        }
-      },
-      contentType: 'application/json',
-      dataType: 'json'
-    });
-    /*
-    window.setTimeout(function () {
-      var html = pskl.utils.Template.getAndReplace('data-uri-export-partial', {
-        src: dataUri
-      });
-      popup.document.title = dataUri;
-      popup.document.body.innerHTML = html;
-    }.bind(this), 500);
-    */
+    var UrlParams = new URLSearchParams(location.search.slice(1));
+
+    that.showSweetAlert(dataUri, UrlParams.get('type'));
   };
 })();
 ;(function () {

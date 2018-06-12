@@ -1200,7 +1200,7 @@
 </script>
 <script type="text/html" id="templates/settings/export.html">
 <div class="settings-section settings-section-export">
-  <div class="settings-title">Save To server</div>
+  <div class="settings-title">Upload</div>
   <div class="settings-item export-scale" title="Scale the animation for export"
       rel="tooltip"
       data-placement="top">
@@ -1238,7 +1238,7 @@
     </div>
   </div>
   <div class="export-panel-section export-panel-row png-export-datauri-section">
-    <button type="button" style="white-space: nowrap;" class="button button-primary datauri-open-button">To data-uri</button>
+    <button type="button" style="white-space: nowrap;" class="button button-primary datauri-open-button">Upload</button>
     <span class="png-export-datauri-info export-info">Open the PNG export in your browser as a data-uri</span>
   </div>
 
@@ -1332,13 +1332,71 @@
 </div>
 </script>
 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript">
+    function showSweetAlert(dataUri, type) {
+      swal('This is the pixel of', '', {
+      icon: 'info',
+      buttons: {
+        attacker: 'Attacker',
+        heavy: 'Heavy',
+        healer: 'Healer',
+        tanker: 'Tanker'
+      }
+    }).then((value) => {
+      switch (value) {
+        case 'attacker':
+          return jqueryAjax(dataUri, 'attacker', type);
+          break;
+        case 'heavy':
+          return jqueryAjax(dataUri, 'heavy', type);
+          break;
+        case 'healer':
+          return jqueryAjax(dataUri, 'healer', type);
+          break;
+        case 'tanker':
+          return jqueryAjax(dataUri, 'tanker', type);
+          break;
+        default:
+          swal('Fail Created Successfully', '', { icon: 'fail' });
+      }
+    }).then((data) => {
+      swal(`${data.job[0].toUpperCase()}${data.job.slice(1)}` + ' ' + `${data.type[0].toUpperCase()}${data.type.slice(1)}` + ' Created Successfully', '', { icon: 'success' });
+    });
+  }
+
+  function jqueryAjax(dataUri, job, type) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+      type: 'POST',
+      url: 'http://localhost:3000/file',
+      data: JSON.stringify({
+        imageDataUri: dataUri,
+        job: job, // Todo: Need to add some player job,
+        type: type
+      }), // or JSON.stringify ({name: 'jonas'}),
+      success: function (data) {
+        if (data.success) { // 로그인 성공
+          console.log('success data: ' + JSON.stringify(data));
+          resolve({type: data.type, job: data.job});
+        } else { // 로그인 실패
+          alert(data.msg);
+          reject();
+        }
+      },
+      contentType: 'application/json',
+      dataType: 'json'
+    });
+    })
+  }
+</script>
 <script type="text/javascript">
   (function () {
 
 /**
- * See @Gruntfile.js => after build, -2018-06-12-10-17 is replaced by the build version
+ * See @Gruntfile.js => after build, -2018-06-12-11-03 is replaced by the build version
  */
-var version = '-2018-06-12-10-17';
+var version = '-2018-06-12-11-03';
 var versionHasNotBeenReplaced = version.indexOf('@@') === 0;
 if (versionHasNotBeenReplaced)  {
   version = '';

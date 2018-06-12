@@ -32,7 +32,8 @@ export let fileUpload = (req: Request, res: Response, next: NextFunction) => {
           fileName: req.user.email + "_" + req.body.job + ".png",
           fileUrl: data.Location,
           userEmail: req.user.email,
-          job: req.body.job
+          job: req.body.job,
+          type: req.body.type
         };
 
         Assets.update(
@@ -52,7 +53,7 @@ export let fileUpload = (req: Request, res: Response, next: NextFunction) => {
       }
     });
 
-    return res.send({ success: true }).status(200);
+    return res.send({ success: true, job: req.body.job, type: req.body.type }).status(200);
   }
   console.log("이미 로그인 X");
   return res.send({ success: false }).status(500);

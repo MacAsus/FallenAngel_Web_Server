@@ -149,6 +149,15 @@ body {
   display: inline-block;
   line-height: 10px;
 }
+.swal-footer {
+    text-align: center;
+}
+
+.swal-button {
+    width: 300px;
+    margin: 0 auto;
+    display: inline-block;
+}
 @keyframes fade {
   50% { opacity: 0.5; }
 }
