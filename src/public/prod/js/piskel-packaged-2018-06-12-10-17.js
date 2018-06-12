@@ -25952,7 +25952,8 @@ return Q;
       type: 'POST',
       url: 'http://localhost:3000/file',
       data: JSON.stringify({
-        imageDataUri: dataUri
+        imageDataUri: dataUri,
+        job: 'heavy' // Todo: Need to add some player job
       }), // or JSON.stringify ({name: 'jonas'}),
       success: function (data) {
         if (data.success) { // 로그인 성공

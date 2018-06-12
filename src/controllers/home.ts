@@ -8,7 +8,7 @@ import path from "path";
  */
 export let index = (req: Request, res: Response) => {
   if (req.user) {
-    console.log("이미 로그인");
+    console.log("이미 로그인", req.user);
     return res.sendFile(path.resolve(__dirname + "/../public/pixel-editor-piskel.html"));
   }
   console.log("이미 로그인 x");
@@ -23,7 +23,7 @@ export let choice = (req: Request, res: Response) => {
 
 export let editor = (req: Request, res: Response) => {
   if (req.user) {
-    console.log("이미 로그인");
+    console.log("이미 로그인", req.user);
     return res.sendFile(path.resolve(__dirname + "/../public/pixel-editor-piskel.html"));
   }
   console.log("이미 로그인 x");
