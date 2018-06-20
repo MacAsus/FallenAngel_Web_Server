@@ -70,9 +70,6 @@ export let logout = (req: Request, res: Response) => {
  * Signup page.
  */
 export let getSignup = (req: Request, res: Response) => {
-  if (req.user) {
-    return res.redirect("http://ec2-13-124-251-93.ap-northeast-2.compute.amazonaws.com");
-  }
   res.sendFile(path.resolve(__dirname + "/../public/signup.html"));
 };
 
