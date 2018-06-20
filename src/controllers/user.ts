@@ -17,7 +17,7 @@ import path from "path";
 export let getLogin = (req: Request, res: Response) => {
   if (req.user) {
     console.log("이미 로그인");
-    return res.redirect("http://localhost:9001/");
+    return res.redirect("http://ec2-13-124-251-93.ap-northeast-2.compute.amazonaws.com/login");
   }
   console.log("이미 로그인 X");
   res.render("account/login", {
@@ -71,7 +71,7 @@ export let logout = (req: Request, res: Response) => {
  */
 export let getSignup = (req: Request, res: Response) => {
   if (req.user) {
-    return res.redirect("http://localhost:9001/");
+    return res.redirect("http://ec2-13-124-251-93.ap-northeast-2.compute.amazonaws.com");
   }
   res.sendFile(path.resolve(__dirname + "/../public/signup.html"));
 };
